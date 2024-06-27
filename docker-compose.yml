@@ -1,0 +1,13 @@
+services:
+  backend:
+    build:
+      dockerfile: Dockerfile.back
+    ports:
+      - '4000:4000'
+  frontend:
+    build:
+      dockerfile: Dockerfile.front
+    ports:
+      - '8080:80'
+    depends_on:
+      - backend
