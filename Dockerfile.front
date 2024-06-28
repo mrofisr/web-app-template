@@ -9,6 +9,7 @@ RUN npm run build_front
 
 FROM nginx:alpine-slim
 COPY --from=builder /front/build /front/build
+RUN chmod -R 755 /front/build/.
 COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
