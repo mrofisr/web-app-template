@@ -7,6 +7,7 @@ root.render(
   <>
     <h1>hello world</h1>
     <button
+      style={{ display: 'block', margin: 10 }}
       onClick={async () => {
         const res = await fetch('api/hello')
         const data = await res.json()
@@ -15,5 +16,9 @@ root.render(
     >
       Get hello from api
     </button>
+    <img
+      src='/cornholio.jpg'
+      height={200}
+    />
   </>,
 )
