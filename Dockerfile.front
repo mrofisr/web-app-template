@@ -1,16 +1,14 @@
 FROM node:20-slim AS builder
 RUN npm config set legacy-peer-deps true
-WORKDIR /app
-COPY package.json .
-RUN npm i
-WORKDIR /app/front
-COPY package.json .
-WORKDIR /app
-RUN npm i
 COPY . .
+RUN npm i
+WORKDIR /front
+RUN npm i
+WORKDIR /
 RUN npm run build_front
 
-FROM nginx:alpine
-COPY --from=builder /app/front/build /usr/share/nginx/html
+FROM nginx:alpine-slim
+COPY --from=builder /front/build /front/build
+COPY nginx.conf /etc/nginx/nginx.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]

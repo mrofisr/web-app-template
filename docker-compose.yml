@@ -1,13 +1,17 @@
+# docker-compose build --no-cache
+# docker-compose down
+# docker-compose up
+
 services:
   backend:
     build:
-      dockerfile: Dockerfile.back
+      dockerfile: ./Dockerfile.back
     ports:
       - '4000:4000'
   frontend:
     build:
-      dockerfile: Dockerfile.front
+      dockerfile: ./Dockerfile.front
     ports:
-      - '8080:80'
+      - '80:80'
     depends_on:
       - backend
