@@ -5,6 +5,8 @@ on:
     branches:
       - main
       - dev
+env:
+  PROJECT_ID: ${{ secrets.PROJECT_ID }}
 
 jobs:
   build:
@@ -46,7 +48,7 @@ jobs:
           context: .
           file: ./Dockerfile.back
           push: true
-          tags: us-central1-docker.pkg.dev/bangkit-project-150424/cloud-run-back:${{ env.IMAGE_VERSION }}
+          tags: us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-run/cloud-run-back:${{ env.IMAGE_VERSION }}
 
       - name: Build and push Docker image Frontend
         id: build-push-front
@@ -55,14 +57,14 @@ jobs:
           context: .
           file: ./Dockerfile.front
           push: true
-          tags: us-central1-docker.pkg.dev/bangkit-project-150424/cloud-run-front:${{ env.IMAGE_VERSION }}
+          tags: us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-run/cloud-run-front:${{ env.IMAGE_VERSION }}
 
       - name: Deploy to Cloud Run Backend
         id: deploy-cloud-run-back
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: cloud-run-backend-${{ env.IMAGE_VERSION }}
-          image: us-central1-docker.pkg.dev/bangkit-project-150424/cloud-run-back:${{ env.IMAGE_VERSION }}
+          image: us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-run/cloud-run-back:${{ env.IMAGE_VERSION }}
           region: us-central1
           project_id: ${{ secrets.PROJECT_ID }}
 
@@ -71,7 +73,7 @@ jobs:
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: cloud-run-frontend-${{ env.IMAGE_VERSION }}
-          image: us-central1-docker.pkg.dev/bangkit-project-150424/cloud-run-front:${{ env.IMAGE_VERSION }}
+          image: us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-run/cloud-run-front:${{ env.IMAGE_VERSION }}
           region: us-central1
           project_id: ${{ secrets.PROJECT_ID }}
 
