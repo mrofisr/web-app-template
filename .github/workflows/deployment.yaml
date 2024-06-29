@@ -41,8 +41,8 @@ jobs:
       - name: Check Google Auth
         id: check-auth
         run: |
+          gcloud auth activate-service-account --key-file=${{ steps.gcloud-auth.outputs.credentials_file_path }}
           gcloud auth list
-          gcloud config list
 
       - name: Setup Secret for Pulling Image
         id: setup-secret
