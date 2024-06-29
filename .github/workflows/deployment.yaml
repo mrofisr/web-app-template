@@ -24,11 +24,18 @@ jobs:
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
+      - name: Gcloud Auth
+        uses: google-github-actions/auth@v2
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.SERVICE_ACCOUNT }}
+
       - name: Setup Secret for Pulling Image
         run: |
-          echo -n '{"auths":{"https://ghcr.io/v1/":{"username":"${{ secrets.REGISTRY_USER }}","password":"${{ secrets.REGISTRY_PASSWORD }}"}}}' > /tmp/.dockerconfigjson
-          gcloud secrets create cloud-run-secret --data-file=/tmp/.dockerconfigjson --replication-policy=automatic || echo "Secret already exists"
-          gcloud secrets versions add cloud-run-secret --data-file=/tmp/.dockerconfigjson
+          echo -n '{"auths":{"ghcr.io":{"username":"${{ secrets.REGISTRY_USER }}","password":"${{ secrets.REGISTRY_PASSWORD }}"}}}' > /tmp/.dockerconfigjson
+          gcloud secrets create cloud-run-secret --project ${{ secrets.PROJECT_ID }} --data-file=/tmp/.dockerconfigjson --replication-policy=automatic || echo "Secret already exists"
+          gcloud secrets versions add cloud-run-secret --project ${{ secrets.PROJECT_ID }} --data-file=/tmp/.dockerconfigjson
 
       - name: Build and push Docker image Backend
         uses: docker/build-push-action@v6
