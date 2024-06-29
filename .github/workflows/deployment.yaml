@@ -24,11 +24,11 @@ jobs:
           username: ${{ secrets.REGISTRY_USER }}
           password: ${{ secrets.REGISTRY_PASSWORD }}
 
-      # - name: Setup Secret for Pulling Image
-      #   run: |
-      #     echo -n '{"auths":{"https://ghcr.io/v1/":{"username":"${{ secrets.REGISTRY_USER }}","password":"${{ secrets.REGISTRY_PASSWORD }}"}}}' > /tmp/.dockerconfigjson
-      #     gcloud secrets create cloud-run-secret --data-file=/tmp/.dockerconfigjson --replication-policy=automatic || echo "Secret already exists"
-      #     gcloud secrets versions add cloud-run-secret --data-file=/tmp/.dockerconfigjson
+      - name: Setup Secret for Pulling Image
+        run: |
+          echo -n '{"auths":{"https://ghcr.io/v1/":{"username":"${{ secrets.REGISTRY_USER }}","password":"${{ secrets.REGISTRY_PASSWORD }}"}}}' > /tmp/.dockerconfigjson
+          gcloud secrets create cloud-run-secret --data-file=/tmp/.dockerconfigjson --replication-policy=automatic || echo "Secret already exists"
+          gcloud secrets versions add cloud-run-secret --data-file=/tmp/.dockerconfigjson
 
       - name: Build and push Docker image Backend
         uses: docker/build-push-action@v6
