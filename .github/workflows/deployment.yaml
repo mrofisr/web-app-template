@@ -34,23 +34,10 @@ jobs:
         id: gcloud-auth
         uses: google-github-actions/auth@v2
         with:
+          token_format: 'access_token'
           project_id: ${{ secrets.PROJECT_ID }}
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
-
-      - name: Check Google Auth
-        id: check-auth
-        run: |
-          cat ${{ steps.gcloud-auth.outputs.credentials_file_path }}
-          gcloud auth activate-service-account --key-file=${{ steps.gcloud-auth.outputs.credentials_file_path }}
-          gcloud auth list
-
-      - name: Setup Secret for Pulling Image
-        id: setup-secret
-        run: |
-          echo -n '{"auths":{"ghcr.io":{"username":"${{ secrets.REGISTRY_USER }}","password":"${{ secrets.REGISTRY_PASSWORD }}"}}}' > /tmp/.dockerconfigjson
-          gcloud secrets create cloud-run-secret --project ${{ secrets.PROJECT_ID }} --data-file=/tmp/.dockerconfigjson --replication-policy=automatic || echo "Secret already exists"
-          gcloud secrets versions add cloud-run-secret --project ${{ secrets.PROJECT_ID }} --data-file=/tmp/.dockerconfigjson
 
       - name: Build and push Docker image Backend
         id: build-push-back
@@ -59,7 +46,7 @@ jobs:
           context: .
           file: ./Dockerfile.back
           push: true
-          tags: ghcr.io/${{ github.repository }}/cloud-run-back:${{ env.IMAGE_VERSION }}
+          tags: ghcr.io/${{ github.repository }}/cloud-run-back:${IMAGE_VERSION}
 
       - name: Build and push Docker image Frontend
         id: build-push-front
@@ -68,4 +55,22 @@ jobs:
           context: .
           file: ./Dockerfile.front
           push: true
-          tags: ghcr.io/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }}
+          tags: ghcr.io/${{ github.repository }}/cloud-run-front:${IMAGE_VERSION}
+
+      - name: Deploy to Cloud Run Backend
+        id: deploy-cloud-run
+        uses: google-github-actions/cloud-run@v1
+        with:
+          service: cloud-run-backend-${IMAGE_VERSION}
+          image: ghcr.io/${{ github.repository }}/cloud-run-back:${IMAGE_VERSION}
+          region: asia-southeast2
+          project_id: ${{ secrets.PROJECT_ID }}
+
+      - name: Deploy to Cloud Run Frontend
+        id: deploy-cloud-run
+        uses: google-github-actions/deploy-cloudrun@v2
+        with:
+          service: cloud-run-frontend-${IMAGE_VERSION}
+          image: ghcr.io/${{ github.repository }}/cloud-run-front:${IMAGE_VERSION}
+          region: asia-southeast2
+          project_id: ${{ secrets.PROJECT_ID }}
