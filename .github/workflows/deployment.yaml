@@ -22,14 +22,6 @@ jobs:
         run: |
           echo "IMAGE_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
 
-      - name: Auth Container Registry
-        id: container-registry-auth
-        uses: docker/login-action@v3
-        with:
-          registry: gcr.io
-          username: oauth2accesstoken
-          password: ${{ steps.gcloud-auth.outputs.access_token }}
-
       - name: Gcloud Auth
         id: gcloud-auth
         uses: google-github-actions/auth@v2
@@ -37,6 +29,14 @@ jobs:
           project_id: ${{ secrets.PROJECT_ID }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Auth Container Registry
+        id: container-registry-auth
+        uses: docker/login-action@v3
+        with:
+          registry: gcr.io
+          username: oauth2accesstoken
+          password: ${{ steps.gcloud-auth.outputs.access_token }}
 
       - name: Build and push Docker image Backend
         id: build-push-back
