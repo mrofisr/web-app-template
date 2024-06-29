@@ -58,7 +58,7 @@ jobs:
           tags: ghcr.io/${{ github.repository }}/cloud-run-front:${IMAGE_VERSION}
 
       - name: Deploy to Cloud Run Backend
-        id: deploy-cloud-run
+        id: deploy-cloud-run-back
         uses: google-github-actions/cloud-run@v1
         with:
           service: cloud-run-backend-${IMAGE_VERSION}
@@ -67,7 +67,7 @@ jobs:
           project_id: ${{ secrets.PROJECT_ID }}
 
       - name: Deploy to Cloud Run Frontend
-        id: deploy-cloud-run
+        id: deploy-cloud-run-front
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: cloud-run-frontend-${IMAGE_VERSION}
