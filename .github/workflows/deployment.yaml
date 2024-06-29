@@ -35,8 +35,8 @@ jobs:
         uses: google-github-actions/auth@v2
         with:
           project_id: ${{ secrets.PROJECT_ID }}
-          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
+          workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
 
       - name: Build and push Docker image Backend
         id: build-push-back
@@ -73,3 +73,8 @@ jobs:
           image: ghcr.io/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }}
           region: asia-southeast2
           project_id: ${{ secrets.PROJECT_ID }}
+
+      - name: 'Use output'
+        run: |
+          'curl "${{ steps.deploy-cloud-run-back.outputs.url }}"'
+          'curl "${{ steps.deploy-cloud-run-front.outputs.url }}"'
