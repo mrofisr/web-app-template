@@ -47,8 +47,6 @@ jobs:
           file: ./Dockerfile.back
           push: true
           tags: asia-southeast2-docker.pkg.dev/${{ github.repository }}/cloud-run-back:${{ env.IMAGE_VERSION }}
-          cache-from: asia-southeast2-docker.pkg.dev/${{ github.repository }}/cloud-run-back:${{ env.IMAGE_VERSION }}
-          cache-to: asia-southeast2-docker.pkg.dev/${{ github.repository }}/cloud-run-back:${{ env.IMAGE_VERSION }},mode=max
 
       - name: Build and push Docker image Frontend
         id: build-push-front
@@ -58,8 +56,6 @@ jobs:
           file: ./Dockerfile.front
           push: true
           tags: asia-southeast2-docker.pkg.dev/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }}
-          cache-from: asia-southeast2-docker.pkg.dev/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }}
-          cache-to: asia-southeast2-docker.pkg.dev/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }},mode=max
 
       - name: Deploy to Cloud Run Backend
         id: deploy-cloud-run-back
