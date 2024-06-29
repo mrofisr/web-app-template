@@ -45,7 +45,7 @@ jobs:
           context: .
           file: ./Dockerfile.back
           push: true
-          tags: ghcr.io/${{ github.repository }}/cloud-run-back:${IMAGE_VERSION}
+          tags: ghcr.io/${{ github.repository }}/cloud-run-back:${{ env.IMAGE_VERSION }}
 
       - name: Build and push Docker image Frontend
         id: build-push-front
