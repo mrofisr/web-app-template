@@ -59,7 +59,7 @@ jobs:
 
       - name: Deploy to Cloud Run Backend
         id: deploy-cloud-run-back
-        uses: google-github-actions/cloud-run@v1
+        uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: cloud-run-backend-${IMAGE_VERSION}
           image: ghcr.io/${{ github.repository }}/cloud-run-back:${IMAGE_VERSION}
