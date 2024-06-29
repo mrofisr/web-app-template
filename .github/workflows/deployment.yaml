@@ -38,6 +38,12 @@ jobs:
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
 
+      - name: Check Google Auth
+        id: check-auth
+        run: |
+          gcloud auth list
+          gcloud config list
+
       - name: Setup Secret for Pulling Image
         id: setup-secret
         run: |
