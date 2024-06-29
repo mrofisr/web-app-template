@@ -26,9 +26,9 @@ jobs:
         id: container-registry-auth
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ secrets.REGISTRY_USER }}
-          password: ${{ secrets.REGISTRY_PASSWORD }}
+          registry: gcr.io
+          username: oauth2accesstoken
+          password: ${{ steps.gcloud-auth.outputs.access_token }}
 
       - name: Gcloud Auth
         id: gcloud-auth
@@ -45,7 +45,7 @@ jobs:
           context: .
           file: ./Dockerfile.back
           push: true
-          tags: ghcr.io/${{ github.repository }}/cloud-run-back:${{ env.IMAGE_VERSION }}
+          tags: gcr.io/${{ github.repository }}/cloud-run-back:${{ env.IMAGE_VERSION }}
 
       - name: Build and push Docker image Frontend
         id: build-push-front
@@ -54,14 +54,14 @@ jobs:
           context: .
           file: ./Dockerfile.front
           push: true
-          tags: ghcr.io/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }}
+          tags: gcr.io/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }}
 
       - name: Deploy to Cloud Run Backend
         id: deploy-cloud-run-back
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: cloud-run-backend-${{ env.IMAGE_VERSION }}
-          image: ghcr.io/${{ github.repository }}/cloud-run-back:${{ env.IMAGE_VERSION }}
+          image: gcr.io/${{ github.repository }}/cloud-run-back:${{ env.IMAGE_VERSION }}
           region: asia-southeast2
           project_id: ${{ secrets.PROJECT_ID }}
 
@@ -70,7 +70,7 @@ jobs:
         uses: google-github-actions/deploy-cloudrun@v2
         with:
           service: cloud-run-frontend-${{ env.IMAGE_VERSION }}
-          image: ghcr.io/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }}
+          image: gcr.io/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }}
           region: asia-southeast2
           project_id: ${{ secrets.PROJECT_ID }}
 
