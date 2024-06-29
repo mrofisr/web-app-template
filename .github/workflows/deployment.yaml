@@ -41,6 +41,7 @@ jobs:
       - name: Check Google Auth
         id: check-auth
         run: |
+          cat ${{ steps.gcloud-auth.outputs.credentials_file_path }}
           gcloud auth activate-service-account --key-file=${{ steps.gcloud-auth.outputs.credentials_file_path }}
           gcloud auth list
 
