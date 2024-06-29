@@ -38,7 +38,6 @@ jobs:
           project_id: ${{ secrets.PROJECT_ID }}
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
-          audience: workload_identity_provider
 
       - name: Setup Secret for Pulling Image
         id: setup-secret
