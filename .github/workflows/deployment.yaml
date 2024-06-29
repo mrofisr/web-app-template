@@ -54,14 +54,14 @@ jobs:
           context: .
           file: ./Dockerfile.front
           push: true
-          tags: ghcr.io/${{ github.repository }}/cloud-run-front:${IMAGE_VERSION}
+          tags: ghcr.io/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }}
 
       - name: Deploy to Cloud Run Backend
         id: deploy-cloud-run-back
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: cloud-run-backend-${IMAGE_VERSION}
-          image: ghcr.io/${{ github.repository }}/cloud-run-back:${IMAGE_VERSION}
+          service: cloud-run-backend-${{ env.IMAGE_VERSION }}
+          image: ghcr.io/${{ github.repository }}/cloud-run-back:${{ env.IMAGE_VERSION }}
           region: asia-southeast2
           project_id: ${{ secrets.PROJECT_ID }}
 
@@ -69,7 +69,7 @@ jobs:
         id: deploy-cloud-run-front
         uses: google-github-actions/deploy-cloudrun@v2
         with:
-          service: cloud-run-frontend-${IMAGE_VERSION}
-          image: ghcr.io/${{ github.repository }}/cloud-run-front:${IMAGE_VERSION}
+          service: cloud-run-frontend-${{ env.IMAGE_VERSION }}
+          image: ghcr.io/${{ github.repository }}/cloud-run-front:${{ env.IMAGE_VERSION }}
           region: asia-southeast2
           project_id: ${{ secrets.PROJECT_ID }}
