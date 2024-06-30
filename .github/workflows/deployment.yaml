@@ -88,5 +88,5 @@ jobs:
 
       - name: Test Cloud Run
         run: |
-          'curl "${{ steps.deploy-cloud-run-back.outputs.url }}"'
-          'curl "${{ steps.deploy-cloud-run-front.outputs.url }}"'
+          curl "${{ steps.deploy-cloud-run-back.outputs.url }}"
+          curl "${{ steps.deploy-cloud-run-front.outputs.url }}"
