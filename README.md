@@ -27,6 +27,9 @@ gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
 - Create a new Workload Identity Pool
 
 ```bash
+export REPO_OWNER="your-github-username"
+export REPO_NAME="your-repo-name"
+
 gcloud iam workload-identity-pools create "github" \
   --project="${PROJECT_ID}" \
   --location="global" \
@@ -55,4 +58,20 @@ gcloud iam service-accounts add-iam-policy-binding ${SA_EMAIL} \
   --project="${PROJECT_ID}" \
   --role="roles/iam.workloadIdentityUser" \
   --member="principalSet://iam.googleapis.com/${WORKLOAD_POOL}/attribute.repository/${REPO_OWNER}/${REPO_NAME}"
+```
+
+- Create a new GitHub Secret
+
+```bash
+WORKLOAD_IDENTITY_PROVIDER value is the output of the following command
+gcloud iam workload-identity-pools providers describe "github-repo-provider" \
+  --project="${PROJECT_ID}" \
+  --location="global" \
+  --workload-identity-pool="github" \
+  --format="value(name)"
+
+PROJECT_ID value is your project id
+
+SERVICE_ACCOUNT value is the email of the service account
+cloud-run-sa@${PROJECT_ID}.iam.gserviceaccount.com
 ```

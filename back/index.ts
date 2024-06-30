@@ -11,6 +11,6 @@ app.get('/api/hello', (_req: Request, res: Response) =>
   res.json({ message: 'hello' }),
 )
 
-app.listen(8080, () => {
-  console.info(`🚀 express http server started at http://localhost:${8080}`)
+app.listen(4000, () => {
+  console.info(`🚀 express http server started at http://localhost:${4000}`)
 })

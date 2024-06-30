@@ -62,6 +62,8 @@ jobs:
       - name: Deploy to Cloud Run Backend
         id: deploy-cloud-run-back
         uses: google-github-actions/deploy-cloudrun@v2
+        env:
+          PORT: 4000
         with:
           service: cloud-run-backend-${{ env.IMAGE_VERSION }}
           image: us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-run/cloud-run-back:${{ env.IMAGE_VERSION }}
@@ -71,6 +73,8 @@ jobs:
       - name: Deploy to Cloud Run Frontend
         id: deploy-cloud-run-front
         uses: google-github-actions/deploy-cloudrun@v2
+        env:
+          PORT: 80
         with:
           service: cloud-run-frontend-${{ env.IMAGE_VERSION }}
           image: us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-run/cloud-run-front:${{ env.IMAGE_VERSION }}
