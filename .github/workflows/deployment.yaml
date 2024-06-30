@@ -81,7 +81,7 @@ jobs:
           image: us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-run/cloud-run-front:${{ env.IMAGE_VERSION }}
           region: us-central1
           project_id: ${{ secrets.PROJECT_ID }}
-          flags: --port 8080 --allow-unauthenticated
+          flags: --port 80 --allow-unauthenticated
 
       - name: Test Cloud Run
         run: |
