@@ -21,7 +21,7 @@ gcloud iam service-accounts create \
 
 gcloud projects add-iam-policy-binding "${PROJECT_ID}" \
     --member="serviceAccount:cloud-run-sa@${PROJECT_ID}.iam.gserviceaccount.com" \
-    --role="roles/artifactregistry.repoAdmin,roles/run.developer"
+    --role="roles/artifactregistry.repoAdmin,roles/run.admin"
 ```
 
 - Create a new Workload Identity Pool

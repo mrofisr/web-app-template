@@ -5,11 +5,18 @@ on:
     branches:
       - main
       - dev
+
+  pull_request:
+    branches:
+      - main
+      - dev
+    types:
+      - closed
 env:
   PROJECT_ID: ${{ secrets.PROJECT_ID }}
 
 jobs:
-  build:
+  build-and-deploy:
     permissions:
       contents: 'read'
       id-token: 'write'
