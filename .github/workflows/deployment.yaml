@@ -62,7 +62,7 @@ jobs:
 
       - name: Change backend stream NGINX config
         run: |
-          sed -i '' 's/backend:4000/${{ steps.deploy-cloud-run-back.outputs.url }}/g' nginx.conf
+          sed -i 's|backend:4000|${{ steps.deploy-cloud-run-back.outputs.url }}|g' nginx.conf
 
       - name: Build and push Docker image Frontend
         id: build-push-front
