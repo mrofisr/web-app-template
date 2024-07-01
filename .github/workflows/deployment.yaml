@@ -12,8 +12,6 @@ on:
       - dev
     types:
       - closed
-env:
-  PROJECT_ID: ${{ secrets.PROJECT_ID }}
 
 jobs:
   build-and-deploy:
@@ -22,15 +20,18 @@ jobs:
       id-token: 'write'
     runs-on: ubuntu-latest
     steps:
+      # Step to checkout the code from the repository
       - name: Checkout code
         id: checkout
         uses: actions/checkout@v4
 
+      # Step to set environment variables
       - name: Set environment variables
         id: set-env
         run: |
           echo "IMAGE_VERSION=${{ github.ref_name }}" >> $GITHUB_ENV
 
+      # Step to authenticate with Google Cloud
       - name: Gcloud Auth
         id: gcloud-auth
         uses: google-github-actions/auth@v2
@@ -40,6 +41,7 @@ jobs:
           service_account: ${{ secrets.SERVICE_ACCOUNT }}
           workload_identity_provider: ${{ secrets.WORKLOAD_IDENTITY_PROVIDER }}
 
+      # Step to authenticate with the Google Container Registry
       - name: Auth Container Registry
         id: container-registry-auth
         uses: docker/login-action@v3
@@ -48,6 +50,7 @@ jobs:
           username: oauth2accesstoken
           password: ${{ steps.gcloud-auth.outputs.access_token }}
 
+      # Step to build and push the Docker image for the backend
       - name: Build and push Docker image Backend
         id: build-push-back
         uses: docker/build-push-action@v6
@@ -57,6 +60,7 @@ jobs:
           push: true
           tags: us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-run/cloud-run-back:${{ env.IMAGE_VERSION }}
 
+      # Step to deploy the backend Docker image to Cloud Run
       - name: Deploy to Cloud Run Backend
         id: deploy-cloud-run-back
         uses: google-github-actions/deploy-cloudrun@v2
@@ -67,6 +71,7 @@ jobs:
           project_id: ${{ secrets.PROJECT_ID }}
           flags: --port 4000 --allow-unauthenticated
 
+      # Step to update the NGINX configuration with the new backend URL
       - name: Change backend stream NGINX config
         run: |
           DOMAIN=$(echo ${{ steps.deploy-cloud-run-back.outputs.url }} | cut -d'/' -f3)
@@ -74,6 +79,7 @@ jobs:
           sed -i 's|http://backend|https://'${DOMAIN}'|g' ./nginx.conf
           cat ./nginx.conf
 
+      # Step to build and push the Docker image for the frontend
       - name: Build and push Docker image Frontend
         id: build-push-front
         uses: docker/build-push-action@v6
@@ -83,6 +89,7 @@ jobs:
           push: true
           tags: us-central1-docker.pkg.dev/${{ secrets.PROJECT_ID }}/cloud-run/cloud-run-front:${{ env.IMAGE_VERSION }}
 
+      # Step to deploy the frontend Docker image to Cloud Run
       - name: Deploy to Cloud Run Frontend
         id: deploy-cloud-run-front
         uses: google-github-actions/deploy-cloudrun@v2
@@ -93,6 +100,7 @@ jobs:
           project_id: ${{ secrets.PROJECT_ID }}
           flags: --port 80 --allow-unauthenticated
 
+      # Step to test if both backend and frontend are running correctly
       - name: Test Cloud Run
         run: |
           curl "${{ steps.deploy-cloud-run-back.outputs.url }}" -I -s | grep "HTTP/2 200"
